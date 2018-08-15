@@ -43,12 +43,12 @@ func (p *Parser) Parse() (*SelectStatement, error) {
 		SK:     make(map[string]Column),
 	}
 
-	if tok, lit := p.scanIgnoreWhitespace(); tok != CREATE_DATABASE {
+	if tok, lit := p.scanIgnoreWhitespace(); tok != CREATE_TABLE {
 		return nil, fmt.Errorf("found %q, expected CREATE", lit)
 	}
 
-	if tok, lit := p.scanIgnoreWhitespace(); tok != CREATE_DATABASE {
-		return nil, fmt.Errorf("found %q, expected CREATE", lit)
+	if tok, lit := p.scanIgnoreWhitespace(); tok != CREATE_TABLE {
+		return nil, fmt.Errorf("found %q, expected TABLE", lit)
 	}
 
 	tok, lit := p.scanIgnoreWhitespace()

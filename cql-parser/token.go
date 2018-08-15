@@ -18,7 +18,7 @@ const (
 	RightRoundBrackets // )
 
 	// Keywords
-	CREATE_DATABASE
+	CREATE_TABLE
 	STATIC
 	PRIMARY_KEY
 )

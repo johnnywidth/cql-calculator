@@ -48,7 +48,7 @@ func generateFromCQL(cqlString string) {
 		panic(err)
 	}
 
-	err = ioutil.WriteFile("filename.yaml", data, 0755)
+	err = ioutil.WriteFile("generated.yaml", data, 0755)
 	if err != nil {
 		panic(err)
 	}
