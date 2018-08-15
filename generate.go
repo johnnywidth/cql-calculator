@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
+	"log"
 
 	cql "github.com/johnnywidth/cql-calculator/cql-parser"
 	yaml "gopkg.in/yaml.v2"
@@ -18,17 +20,18 @@ func generateFromCQL(cqlString string) {
 
 	m := Metadata{Name: r.TableName}
 
-	for _, v := range r.PK {
-		m.Partition = append(m.Partition, Column{Name: v.Name, Type: v.Type})
+	fmt.Print("Enter rows count: ")
+	var i int
+	_, err = fmt.Scanf("%d", &i)
+	if err != nil {
+		panic(err)
 	}
 
-	for _, v := range r.CK {
-		m.Cluster = append(m.Cluster, Column{Name: v.Name, Type: v.Type})
-	}
+	m.Rows = i
 
-	for _, v := range r.SK {
-		m.Static = append(m.Static, Column{Name: v.Name, Type: v.Type})
-	}
+	m.Partition = buildKeys(r.Colums, r.PK)
+	m.Cluster = buildKeys(r.Colums, r.CK)
+	m.Static = buildKeys(r.Colums, r.SK)
 
 	for _, v := range r.Colums {
 		if _, ok := r.PK[v.Name]; ok {
@@ -40,7 +43,10 @@ func generateFromCQL(cqlString string) {
 		if _, ok := r.SK[v.Name]; ok {
 			continue
 		}
-		m.Column = append(m.Column, Column{Name: v.Name, Type: v.Type})
+
+		s := GetSizeByType(v.Type)
+
+		m.Column = append(m.Column, Column{Name: v.Name, Type: v.Type, Size: s})
 	}
 
 	data, err := yaml.Marshal(m)
@@ -52,4 +58,30 @@ func generateFromCQL(cqlString string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func buildKeys(ac map[string]cql.Column, c map[string]cql.Column) []Column {
+	nc := []Column{}
+	for _, v := range c {
+		t, ok := ac[v.Name]
+		if !ok {
+			log.Fatalf("Miss key in column %s", v.Name)
+		}
+
+		s := GetSizeByType(t.Type)
+
+		if t.Type == "string" {
+			fmt.Printf("Enter size (avarage) for %s (%s) type: ", t.Name, t.Type)
+			var i int
+			_, err := fmt.Scanf("%d", &i)
+			if err != nil {
+				panic(err)
+			}
+			s = i
+		}
+
+		nc = append(nc, Column{Name: v.Name, Type: t.Type, Size: s})
+	}
+
+	return nc
 }

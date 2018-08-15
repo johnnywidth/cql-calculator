@@ -91,11 +91,12 @@ func (p *Parser) Columns(stmt *SelectStatement) error {
 			return fmt.Errorf("found %q, expected type", lit2)
 		}
 
+		stmt.Colums[lit] = Column{Name: lit, Type: lit2}
+
 		tok3, _ := p.scanIgnoreWhitespace()
 		if tok3 == STATIC {
 			stmt.SK[lit] = Column{Name: lit, Type: lit2}
 		} else {
-			stmt.Colums[lit] = Column{Name: lit, Type: lit2}
 			p.unscan()
 		}
 
