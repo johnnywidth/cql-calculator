@@ -5,10 +5,13 @@ partition:
      type: string
      size: 30
 cluster:
-   - name: name
+   - name: email
      type: string
      size: 30
 static:
+   - name: name
+     type: string
+     size: 30
 column:
    - name: status
      type: tinyint
