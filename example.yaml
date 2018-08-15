@@ -1,0 +1,18 @@
+name: video
+rows: 1000
+partition:
+   - name: video_id
+     type: string
+     size: 30
+cluster:
+   - name: name
+     type: string
+     size: 30
+static:
+column:
+   - name: status
+     type: tinyint
+     size: 1
+   - name: uploaded_at
+     type: timestamp
+     size: 8
