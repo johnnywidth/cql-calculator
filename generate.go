@@ -44,7 +44,7 @@ func generateFromCQL(cqlString string) {
 			continue
 		}
 
-		s := GetSizeByType(v.Type)
+		s := GetSizeByType(v.Name, v.Type)
 
 		m.Column = append(m.Column, Column{Name: v.Name, Type: v.Type, Size: s})
 	}
@@ -68,17 +68,7 @@ func buildKeys(ac map[string]cql.Column, c map[string]cql.Column) []Column {
 			log.Fatalf("Miss key in column %s", v.Name)
 		}
 
-		s := GetSizeByType(t.Type)
-
-		if t.Type == "string" {
-			fmt.Printf("Enter size (avarage) for %s (%s) type: ", t.Name, t.Type)
-			var i int
-			_, err := fmt.Scanf("%d", &i)
-			if err != nil {
-				panic(err)
-			}
-			s = i
-		}
+		s := GetSizeByType(t.Name, t.Type)
 
 		nc = append(nc, Column{Name: v.Name, Type: t.Type, Size: s})
 	}
