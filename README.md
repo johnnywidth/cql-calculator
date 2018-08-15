@@ -19,4 +19,5 @@ In order to determine the size, we use the following formula to determine the si
 
 ## How to run
 
-> go run main.go -file example.yaml
+> ./cql-calculator -file example.yaml
+> ./cql-calculator -generate "CREATE TABLE video (video_id int, email string, name string STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))"

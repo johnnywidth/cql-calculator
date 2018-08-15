@@ -29,7 +29,7 @@ var m Metadata
 
 func main() {
 	fileName := flag.String("file", "", "")
-	generate := flag.String("generate", "CREATE DATABASE video (video_id int, email string, name string STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))", "")
+	generate := flag.String("generate", "", "")
 	flag.Parse()
 
 	if *generate != "" {
