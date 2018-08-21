@@ -2,15 +2,15 @@ name: video
 rows: 1000
 partition:
    - name: video_id
-     type: string
+     type: text
      size: 30
 cluster:
    - name: email
-     type: string
+     type: text
      size: 30
 static:
    - name: name
-     type: string
+     type: text
      size: 30
 column:
    - name: status

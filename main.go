@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
-	"log"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -32,9 +32,8 @@ func main() {
 	generate := flag.String("generate", "", "")
 	flag.Parse()
 
-	if *generate != "" {
-		generateFromCQL(*generate)
-		return
+	if *fileName != "" && *generate != "" {
+		generateFromCQL(*fileName, *generate)
 	}
 
 	f, err := ioutil.ReadFile(*fileName)
@@ -48,45 +47,10 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println()
 	nov := numberOfValues(m)
-	log.Printf("Number of Values:\n%d\n\n", nov)
+	fmt.Printf("Number of Values:\n%d\n\n", nov)
 
 	pds := partitionDiskSize(m, nov)
-	log.Printf("Partition Size on Disk:\n%d bytes\n%.2f Mb", pds, float64(pds)/MEGABYTE)
-}
-
-func numberOfValues(t Metadata) int {
-	allColumns := len(t.Column) + len(t.Partition) + len(t.Cluster) + len(t.Static)
-	primaryColumns := len(t.Partition) + len(t.Cluster)
-	staticColumns := len(t.Static)
-
-	log.Printf("Number of Values(%d*(%d-%d-%d) + %d)", t.Rows, allColumns, primaryColumns, staticColumns, staticColumns)
-
-	return t.Rows*(allColumns-primaryColumns-staticColumns) + staticColumns
-}
-
-func partitionDiskSize(t Metadata, nov int) int {
-	var sofPK int
-	for _, v := range t.Partition {
-		sofPK += v.Size
-	}
-
-	var sofS int
-	for _, v := range t.Static {
-		sofS += v.Size
-	}
-
-	var sofCK int
-	for _, v := range t.Cluster {
-		sofCK += v.Size
-	}
-
-	var ek int
-	for _, v := range t.Column {
-		ek += v.Size + sofCK
-	}
-
-	log.Printf("Partition Size on Disk(%d + %d + (%d * %d) + (8 * %d))", sofPK, sofS, t.Rows, ek, nov)
-
-	return sofPK + sofS + (t.Rows * ek) + (8 * nov)
+	fmt.Printf("Partition Size on Disk:\n%d bytes\n%.2f Mb\n", pds, float64(pds)/MEGABYTE)
 }

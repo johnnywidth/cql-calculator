@@ -4,16 +4,18 @@ import "fmt"
 
 func GetSizeByType(n, t string) int {
 	switch t {
-	case "tinyint":
+	case "decimal", "duration":
+		return -1
+	case "boolean", "tinyint", "smallint":
 		return 1
-	case "int":
+	case "date", "int", "float", "inet":
 		return 4
-	case "timestamp":
+	case "bigint", "counter", "time", "timestamp", "double", "varint":
 		return 8
-	case "uuid":
+	case "uuid", "timeuuid":
 		return 16
-	case "string":
-		fmt.Printf("Enter size (avarage) for `%s (%s)` type: ", n, t)
+	case "ascii", "text", "varchar", "blob", "map", "list", "set":
+		fmt.Printf("Enter (avarage) size for `%s (%s)` column: ", n, t)
 		var i int
 		_, err := fmt.Scanf("%d", &i)
 		if err != nil {

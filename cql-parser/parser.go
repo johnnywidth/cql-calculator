@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-// SelectStatement represents a SQL SELECT statement.
+// SelectStatement represents a SQL CREATE TABLE statement.
 type SelectStatement struct {
 	TableName string
 	Colums    map[string]Column
@@ -34,7 +34,7 @@ func NewParser(r io.Reader) *Parser {
 	return &Parser{s: NewScanner(r)}
 }
 
-// Parse parses a SQL SELECT statement.
+// Parse parses a SQL CREATE TABLE statement.
 func (p *Parser) Parse() (*SelectStatement, error) {
 	stmt := &SelectStatement{
 		Colums: make(map[string]Column),
@@ -57,12 +57,11 @@ func (p *Parser) Parse() (*SelectStatement, error) {
 	}
 	stmt.TableName = lit
 
-	// First token should be a "CREATE" keyword.
 	if tok, lit := p.scanIgnoreWhitespace(); tok != LeftRoundBrackets {
 		return nil, fmt.Errorf("found %q, expected CREATE", lit)
 	}
 
-	err := p.Columns(stmt)
+	err := p.regularColumns(stmt)
 	if err != nil {
 		return nil, err
 	}
@@ -70,11 +69,11 @@ func (p *Parser) Parse() (*SelectStatement, error) {
 	return stmt, nil
 }
 
-func (p *Parser) Columns(stmt *SelectStatement) error {
+func (p *Parser) regularColumns(stmt *SelectStatement) error {
 	for {
 		tok, lit := p.scanIgnoreWhitespace()
 		if tok == PRIMARY_KEY {
-			err := p.PK(stmt)
+			err := p.pkColumns(stmt)
 			if err != nil {
 				return err
 			}
@@ -85,7 +84,6 @@ func (p *Parser) Columns(stmt *SelectStatement) error {
 			return fmt.Errorf("found %q, expected column name", lit)
 		}
 
-		// Read a type.
 		tok2, lit2 := p.scanIgnoreWhitespace()
 		if tok2 != IDENT {
 			return fmt.Errorf("found %q, expected type", lit2)
@@ -100,7 +98,6 @@ func (p *Parser) Columns(stmt *SelectStatement) error {
 			p.unscan()
 		}
 
-		// If the next token is not a comma then break the loop.
 		tok, _ = p.scanIgnoreWhitespace()
 		if tok != COMMA {
 			p.unscan()
@@ -111,7 +108,7 @@ func (p *Parser) Columns(stmt *SelectStatement) error {
 	return nil
 }
 
-func (p *Parser) PK(stmt *SelectStatement) error {
+func (p *Parser) pkColumns(stmt *SelectStatement) error {
 	c := make(map[string]Column)
 
 	tok, lit := p.scanIgnoreWhitespace()
@@ -132,10 +129,9 @@ func (p *Parser) PK(stmt *SelectStatement) error {
 
 		c[lit] = Column{Name: lit}
 
-		// TODO
+		// TODO: if PKs more than one in `()`
 		break
 
-		// If the next token is not a comma then break the loop.
 		tok, _ = p.scanIgnoreWhitespace()
 		if tok != COMMA {
 			p.unscan()
@@ -145,12 +141,12 @@ func (p *Parser) PK(stmt *SelectStatement) error {
 
 	stmt.PK = c
 
-	err := p.CK(stmt)
+	err := p.ckColumns(stmt)
 
 	return err
 }
 
-func (p *Parser) CK(stmt *SelectStatement) error {
+func (p *Parser) ckColumns(stmt *SelectStatement) error {
 	tok, lit := p.scanIgnoreWhitespace()
 	if tok != RightRoundBrackets && tok != COMMA {
 		return fmt.Errorf("found %q, expected rrb or comma", lit)
@@ -164,7 +160,6 @@ func (p *Parser) CK(stmt *SelectStatement) error {
 
 		stmt.CK[lit] = Column{Name: lit}
 
-		// If the next token is not a comma then break the loop.
 		tok, _ = p.scanIgnoreWhitespace()
 		if tok != COMMA {
 			p.unscan()
