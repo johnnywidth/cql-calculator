@@ -3,6 +3,7 @@ package cql
 // Token represents a lexical token.
 type Token int
 
+// Tokens
 const (
 	// Special tokens
 	ILLEGAL Token = iota
@@ -14,11 +15,12 @@ const (
 
 	// Misc characters
 	COMMA              // ,
+	Dot                // .
 	LeftRoundBrackets  // (
 	RightRoundBrackets // )
 
 	// Keywords
-	CREATE_TABLE
-	STATIC
-	PRIMARY_KEY
+	CreateTable
+	Static
+	PrimaryKey
 )

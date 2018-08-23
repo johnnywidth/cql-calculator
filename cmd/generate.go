@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"log"
 
-	cql "github.com/johnnywidth/cql-calculator/cql-parser"
+	"github.com/johnnywidth/cql-calculator/src"
+	cql "github.com/johnnywidth/cql-calculator/src/cql-parser"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -22,7 +22,7 @@ func generateFromCQL(fileName, cqlString string) {
 		panic("There no partition keys")
 	}
 
-	m := Metadata{Name: r.TableName}
+	m := src.Metadata{Name: r.TableName}
 
 	fmt.Print("Enter rows count per one partition: ")
 	var i int
@@ -33,9 +33,9 @@ func generateFromCQL(fileName, cqlString string) {
 
 	m.Rows = i
 
-	m.Partition = buildKeys(r.Colums, r.PK)
-	m.Cluster = buildKeys(r.Colums, r.CK)
-	m.Static = buildKeys(r.Colums, r.SK)
+	m.Partition = populateColumnSize(r.PK)
+	m.Cluster = populateColumnSize(r.CK)
+	m.Static = populateColumnSize(r.SK)
 
 	for _, v := range r.Colums {
 		if _, ok := r.PK[v.Name]; ok {
@@ -48,9 +48,9 @@ func generateFromCQL(fileName, cqlString string) {
 			continue
 		}
 
-		s := GetSizeByType(v.Name, v.Type)
+		s := src.GetSizeByType(v.Name, v.Type)
 
-		m.Column = append(m.Column, Column{Name: v.Name, Type: v.Type, Size: s})
+		m.Column = append(m.Column, src.Column{Name: v.Name, Type: v.Type, Size: s})
 	}
 
 	data, err := yaml.Marshal(m)
@@ -64,17 +64,14 @@ func generateFromCQL(fileName, cqlString string) {
 	}
 }
 
-func buildKeys(ac map[string]cql.Column, c map[string]cql.Column) []Column {
-	nc := []Column{}
+func populateColumnSize(c map[string]cql.Column) []src.Column {
+	nc := make([]src.Column, len(c))
+	i := 0
 	for _, v := range c {
-		t, ok := ac[v.Name]
-		if !ok {
-			log.Fatalf("Miss key in column %s", v.Name)
-		}
+		s := src.GetSizeByType(v.Name, v.Type)
 
-		s := GetSizeByType(t.Name, t.Type)
-
-		nc = append(nc, Column{Name: v.Name, Type: t.Type, Size: s})
+		nc[i] = src.Column{Name: v.Name, Type: v.Type, Size: s}
+		i++
 	}
 
 	return nc

@@ -37,10 +37,14 @@ func (s *Scanner) Scan() (tok Token, lit string) {
 	switch ch {
 	case eof:
 		return EOF, ""
-	case '(':
-		return LeftRoundBrackets, string(ch)
 	case ',':
 		return COMMA, string(ch)
+	case '.':
+		return Dot, string(ch)
+	case '(':
+		return LeftRoundBrackets, string(ch)
+	case ')':
+		return RightRoundBrackets, string(ch)
 	}
 
 	return ILLEGAL, string(ch)
@@ -90,11 +94,11 @@ func (s *Scanner) scanIdent() (tok Token, lit string) {
 	// If the string matches a keyword then return that keyword.
 	switch strings.ToUpper(buf.String()) {
 	case "CREATE", "TABLE":
-		return CREATE_TABLE, buf.String()
+		return CreateTable, buf.String()
 	case "PRIMARY", "KEY":
-		return PRIMARY_KEY, buf.String()
+		return PrimaryKey, buf.String()
 	case "STATIC":
-		return STATIC, buf.String()
+		return Static, buf.String()
 	}
 
 	// Otherwise return as a regular identifier.

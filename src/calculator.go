@@ -1,8 +1,23 @@
-package main
+package src
 
 import "fmt"
 
-func numberOfValues(t Metadata) int {
+type Metadata struct {
+	Name      string   `yaml:"name"`
+	Rows      int      `yaml:"rows"`
+	Partition []Column `yaml:"partition"`
+	Cluster   []Column `yaml:"cluster"`
+	Static    []Column `yaml:"static"`
+	Column    []Column `yaml:"column"`
+}
+
+type Column struct {
+	Name string `yaml:"name"`
+	Type string `yaml:"type"`
+	Size int    `yaml:"size"`
+}
+
+func NumberOfValues(t Metadata) int {
 	allColumns := len(t.Column) + len(t.Partition) + len(t.Cluster) + len(t.Static)
 	primaryColumns := len(t.Partition) + len(t.Cluster)
 	staticColumns := len(t.Static)
@@ -12,7 +27,7 @@ func numberOfValues(t Metadata) int {
 	return t.Rows*(allColumns-primaryColumns-staticColumns) + staticColumns
 }
 
-func partitionDiskSize(t Metadata, nov int) int {
+func PartitionDiskSize(t Metadata, nov int) int {
 	var sofPK int
 	for _, v := range t.Partition {
 		sofPK += v.Size

@@ -20,14 +20,14 @@ In order to determine the size, we use the following formula to determine the si
 ## How to run
 
 ```
+> cd cmd
 > go build
-> ./cql-calculator -file example.yaml
-> ./cql-calculator -file generated.yaml -generate "CREATE TABLE video (video_id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))"
+> ./cmd -file example.yaml
+> ./cmd -file generated.yaml -generate "CREATE TABLE video (video_id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))"
 ```
 
 ### TODO
  - Parse `IF NOT EXISTS`
- - Parse composite partition key
  - Parse simple `PRIMARY KEY`
  - Parse full literals for `list`, `map`, `set`
  - Consider cassandra limitations, like max size for types, etc.
