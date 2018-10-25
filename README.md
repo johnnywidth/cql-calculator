@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/johnnywidth/cql-calculator.svg?style=svg)](https://circleci.com/gh/johnnywidth/cql-calculator) [![codecov](https://codecov.io/gh/johnnywidth/cql-calculator/branch/master/graph/badge.svg)](https://codecov.io/gh/johnnywidth/cql-calculator)
+[![CircleCI](https://circleci.com/gh/johnnywidth/cql-calculator.svg?style=svg)](https://circleci.com/gh/johnnywidth/cql-calculator) [![codecov](https://codecov.io/gh/johnnywidth/cql-calculator/branch/master/graph/badge.svg)](https://codecov.io/gh/johnnywidth/cql-calculator) [![Go Report Card](https://goreportcard.com/badge/github.com/johnnywidth/cql-calculator)](https://goreportcard.com/report/github.com/johnnywidth/cql-calculator)
 
 # Calculating the size of a table in Cassandra
 
