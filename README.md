@@ -1,4 +1,4 @@
-# Calculating the size of a table in Cassandra
+# Calculating the size of a table in Cassandra [![CircleCI](https://circleci.com/gh/johnnywidth/cql-calculator.svg?style=svg)](https://circleci.com/gh/johnnywidth/cql-calculator)
 
 ## Calculating Partition Size
 
