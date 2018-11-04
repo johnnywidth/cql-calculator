@@ -2,6 +2,7 @@ package src
 
 import "fmt"
 
+// Metadata table metadata
 type Metadata struct {
 	Name      string   `yaml:"name"`
 	Rows      int      `yaml:"rows"`
@@ -11,12 +12,14 @@ type Metadata struct {
 	Column    []Column `yaml:"column"`
 }
 
+// Column table column data
 type Column struct {
 	Name string `yaml:"name"`
 	Type string `yaml:"type"`
 	Size int    `yaml:"size"`
 }
 
+// NOV number of values data
 type NOV struct {
 	Metadata Metadata
 
@@ -24,6 +27,7 @@ type NOV struct {
 	formula string
 }
 
+// Calculate calculate number of values
 func (p *NOV) Calculate() {
 	allColumns := len(p.Metadata.Column) + len(p.Metadata.Partition) + len(p.Metadata.Cluster) + len(p.Metadata.Static)
 	primaryColumns := len(p.Metadata.Partition) + len(p.Metadata.Cluster)
@@ -34,14 +38,17 @@ func (p *NOV) Calculate() {
 	p.result = p.Metadata.Rows*(allColumns-primaryColumns-staticColumns) + staticColumns
 }
 
+// GetResult get NOV result
 func (p *NOV) GetResult() int {
 	return p.result
 }
 
+// GetFormula get NOV formula
 func (p *NOV) GetFormula() string {
 	return p.formula
 }
 
+// PDS partition disk size data
 type PDS struct {
 	Metadata Metadata
 	NOV      int
@@ -50,6 +57,7 @@ type PDS struct {
 	result  int
 }
 
+// Calculate calculate partition disk size
 func (p *PDS) Calculate() {
 	var sofPK int
 	for _, v := range p.Metadata.Partition {
@@ -76,10 +84,12 @@ func (p *PDS) Calculate() {
 	p.result = sofPK + sofS + (p.Metadata.Rows * ek) + (8 * p.NOV)
 }
 
+// GetResult get PDS result
 func (p *PDS) GetResult() int {
 	return p.result
 }
 
+// GetFormula get PDS formuula
 func (p *PDS) GetFormula() string {
 	return p.formula
 }

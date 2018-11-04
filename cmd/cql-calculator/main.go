@@ -9,9 +9,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// MEGABYTE megabyte
 const MEGABYTE = 1.0 << (10 * 2)
-
-var m src.Metadata
 
 func main() {
 	fileName := flag.String("file", "", "")
@@ -47,7 +46,7 @@ func main() {
 		panic(err)
 	}
 
-	m = src.Metadata{}
+	m := src.Metadata{}
 	err = yaml.Unmarshal(f, &m)
 	if err != nil {
 		panic(err)

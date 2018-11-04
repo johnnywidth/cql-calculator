@@ -7,6 +7,7 @@ import (
 	cql "github.com/johnnywidth/cql-calculator/src/cql-parser"
 )
 
+// GenerateFromCQL generate from cql query
 func GenerateFromCQL(cqlString string, rn int) (Metadata, error) {
 	b := bytes.NewReader([]byte(cqlString))
 	p := cql.NewParser(b)

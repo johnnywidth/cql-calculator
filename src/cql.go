@@ -2,6 +2,7 @@ package src
 
 import "fmt"
 
+// GetSizeByType get zise by type
 func GetSizeByType(n, t string) int {
 	switch t {
 	case "decimal", "duration":
