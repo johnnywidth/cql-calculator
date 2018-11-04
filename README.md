@@ -22,10 +22,11 @@ In order to determine the size, we use the following formula to determine the si
 ## How to run
 
 ```
-> cd cmd
+> go install github.com/johnnywidth/cql-calculator/cmd/cql-calculator
+> cd $GOPATH/src/github.com/johnnywidth/cql-calculator/cmd/cql-calculator
 > go build
-> ./cmd -file example.yaml
-> ./cmd -file generated.yaml -generate "CREATE TABLE video (video_id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))"
+> ./cql-calculator -file example.yaml
+> ./cql-calculator -file generated.yaml -generate "CREATE TABLE video (video_id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))"
 ```
 
 ### TODO

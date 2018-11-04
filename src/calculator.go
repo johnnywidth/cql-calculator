@@ -17,38 +17,69 @@ type Column struct {
 	Size int    `yaml:"size"`
 }
 
-func NumberOfValues(t Metadata) int {
-	allColumns := len(t.Column) + len(t.Partition) + len(t.Cluster) + len(t.Static)
-	primaryColumns := len(t.Partition) + len(t.Cluster)
-	staticColumns := len(t.Static)
+type NOV struct {
+	Metadata Metadata
 
-	fmt.Printf("Number of Values(%d*(%d-%d-%d) + %d)\n", t.Rows, allColumns, primaryColumns, staticColumns, staticColumns)
-
-	return t.Rows*(allColumns-primaryColumns-staticColumns) + staticColumns
+	result  int
+	formula string
 }
 
-func PartitionDiskSize(t Metadata, nov int) int {
+func (p *NOV) Calculate() {
+	allColumns := len(p.Metadata.Column) + len(p.Metadata.Partition) + len(p.Metadata.Cluster) + len(p.Metadata.Static)
+	primaryColumns := len(p.Metadata.Partition) + len(p.Metadata.Cluster)
+	staticColumns := len(p.Metadata.Static)
+
+	p.formula = fmt.Sprintf("(%d * (%d - %d - %d) + %d)", p.Metadata.Rows, allColumns, primaryColumns, staticColumns, staticColumns)
+
+	p.result = p.Metadata.Rows*(allColumns-primaryColumns-staticColumns) + staticColumns
+}
+
+func (p *NOV) GetResult() int {
+	return p.result
+}
+
+func (p *NOV) GetFormula() string {
+	return p.formula
+}
+
+type PDS struct {
+	Metadata Metadata
+	NOV      int
+
+	formula string
+	result  int
+}
+
+func (p *PDS) Calculate() {
 	var sofPK int
-	for _, v := range t.Partition {
+	for _, v := range p.Metadata.Partition {
 		sofPK += v.Size
 	}
 
 	var sofS int
-	for _, v := range t.Static {
+	for _, v := range p.Metadata.Static {
 		sofS += v.Size
 	}
 
 	var sofCK int
-	for _, v := range t.Cluster {
+	for _, v := range p.Metadata.Cluster {
 		sofCK += v.Size
 	}
 
 	var ek int
-	for _, v := range t.Column {
+	for _, v := range p.Metadata.Column {
 		ek += v.Size + sofCK
 	}
 
-	fmt.Printf("Partition Size on Disk(%d + %d + (%d * %d) + (8 * %d))\n", sofPK, sofS, t.Rows, ek, nov)
+	p.formula = fmt.Sprintf("(%d + %d + (%d * %d) + (8 * %d))", sofPK, sofS, p.Metadata.Rows, ek, p.NOV)
 
-	return sofPK + sofS + (t.Rows * ek) + (8 * nov)
+	p.result = sofPK + sofS + (p.Metadata.Rows * ek) + (8 * p.NOV)
+}
+
+func (p *PDS) GetResult() int {
+	return p.result
+}
+
+func (p *PDS) GetFormula() string {
+	return p.formula
 }
