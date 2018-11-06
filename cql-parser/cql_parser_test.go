@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	cql "github.com/johnnywidth/cql-calculator/src/cql-parser"
+	cql "github.com/johnnywidth/cql-calculator/cql-parser"
 )
 
 func TestParse(t *testing.T) {

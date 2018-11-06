@@ -1,10 +1,10 @@
-package src
+package calculator
 
 import (
 	"bytes"
 	"errors"
 
-	cql "github.com/johnnywidth/cql-calculator/src/cql-parser"
+	cql "github.com/johnnywidth/cql-calculator/cql-parser"
 )
 
 // Metadata table metadata

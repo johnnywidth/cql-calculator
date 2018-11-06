@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/johnnywidth/cql-calculator/src"
+	"github.com/johnnywidth/cql-calculator"
 	"gopkg.in/yaml.v2"
 )
 
@@ -26,7 +26,7 @@ func main() {
 			panic(err)
 		}
 
-		meta, err := src.PopulateTableMetadata(*generate, i)
+		meta, err := calculator.PopulateTableMetadata(*generate, i)
 		if err != nil {
 			panic(err)
 		}
@@ -65,18 +65,18 @@ func main() {
 		panic(err)
 	}
 
-	m := src.Metadata{}
+	m := calculator.Metadata{}
 	err = yaml.Unmarshal(f, &m)
 	if err != nil {
 		panic(err)
 	}
 
-	nov := src.NOV{
+	nov := calculator.NOV{
 		Metadata: m,
 	}
 	nov.Calculate()
 
-	pds := src.PDS{
+	pds := calculator.PDS{
 		Metadata: m,
 		NOV:      nov.GetResult(),
 	}

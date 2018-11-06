@@ -1,9 +1,9 @@
-package src
+package calculator
 
 import (
 	"errors"
 
-	cql "github.com/johnnywidth/cql-calculator/src/cql-parser"
+	cql "github.com/johnnywidth/cql-calculator/cql-parser"
 )
 
 // CustomSize size which need custom specify
