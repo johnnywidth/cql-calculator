@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 
 	"github.com/johnnywidth/cql-calculator/src"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 // MEGABYTE megabyte
@@ -19,15 +19,34 @@ func main() {
 
 	if *fileName != "" && *generate != "" {
 		fmt.Print("Enter rows count per one partition: ")
+
 		var i int
 		_, err := fmt.Scanf("%d", &i)
 		if err != nil {
 			panic(err)
 		}
 
-		meta, err := src.GenerateFromCQL(*generate, i)
+		meta, err := src.PopulateTableMetadata(*generate, i)
 		if err != nil {
 			panic(err)
+		}
+
+		if len(meta.GetNotSpecifiedSizes()) > 0 {
+			for _, v := range meta.GetNotSpecifiedSizes() {
+				fmt.Printf("Enter (avarage) size for `%s (%s)` column: ", v.Name, v.Type)
+
+				var i int
+				_, err = fmt.Scanf("%d", &i)
+				if err != nil {
+					panic(err)
+				}
+				v.Size = i
+
+				err = meta.SpecifyCustomSize(v)
+				if err != nil {
+					panic(err)
+				}
+			}
 		}
 
 		data, err := yaml.Marshal(meta)

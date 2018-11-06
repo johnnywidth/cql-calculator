@@ -2,23 +2,6 @@ package src
 
 import "fmt"
 
-// Metadata table metadata
-type Metadata struct {
-	Name      string   `yaml:"name"`
-	Rows      int      `yaml:"rows"`
-	Partition []Column `yaml:"partition"`
-	Cluster   []Column `yaml:"cluster"`
-	Static    []Column `yaml:"static"`
-	Column    []Column `yaml:"column"`
-}
-
-// Column table column data
-type Column struct {
-	Name string `yaml:"name"`
-	Type string `yaml:"type"`
-	Size int    `yaml:"size"`
-}
-
 // NOV number of values data
 type NOV struct {
 	Metadata Metadata
