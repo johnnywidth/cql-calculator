@@ -4,26 +4,26 @@ import (
 	"bytes"
 	"errors"
 
-	cql "github.com/johnnywidth/cql-calculator/cql-parser"
+	"github.com/johnnywidth/cql-calculator/cql-parser"
 )
 
 // Metadata table metadata
 type Metadata struct {
-	Name      string   `yaml:"name"`
-	Rows      int      `yaml:"rows"`
-	Partition []Column `yaml:"partition"`
-	Cluster   []Column `yaml:"cluster"`
-	Static    []Column `yaml:"static"`
-	Column    []Column `yaml:"column"`
+	Name      string   `json:"name" yaml:"name"`
+	Rows      int      `json:"rows" yaml:"rows"`
+	Partition []Column `json:"partition" yaml:"partition"`
+	Cluster   []Column `json:"cluster" yaml:"cluster"`
+	Static    []Column `json:"static" yaml:"static"`
+	Column    []Column `json:"column" yaml:"column"`
 
 	customSizes map[string]CustomSize
 }
 
 // Column table column data
 type Column struct {
-	Name string `yaml:"name"`
-	Type string `yaml:"type"`
-	Size int    `yaml:"size"`
+	Name string `json:"name" yaml:"name"`
+	Type string `json:"type" yaml:"type"`
+	Size int    `json:"size" yaml:"size"`
 }
 
 // PopulateTableMetadata populate table metadata from cql query

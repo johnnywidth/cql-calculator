@@ -3,14 +3,14 @@ package calculator
 import (
 	"errors"
 
-	cql "github.com/johnnywidth/cql-calculator/cql-parser"
+	"github.com/johnnywidth/cql-calculator/cql-parser"
 )
 
 // CustomSize size which need custom specify
 type CustomSize struct {
-	Name string
-	Type string
-	Size int
+	Name string `json:"name"`
+	Type string `json:"type"`
+	Size int    `json:"size"`
 }
 
 // GetNotSpecifiedSizes get all not specified sizes
@@ -27,6 +27,7 @@ func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
 
 	for k, v := range m.Partition {
 		if v.Name == s.Name {
+			delete(m.customSizes, s.Name)
 			m.Partition[k].Size = s.Size
 			return nil
 		}
@@ -34,6 +35,7 @@ func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
 
 	for k, v := range m.Cluster {
 		if v.Name == s.Name {
+			delete(m.customSizes, s.Name)
 			m.Cluster[k].Size = s.Size
 			return nil
 		}
@@ -41,6 +43,7 @@ func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
 
 	for k, v := range m.Static {
 		if v.Name == s.Name {
+			delete(m.customSizes, s.Name)
 			m.Static[k].Size = s.Size
 			return nil
 		}
@@ -48,6 +51,7 @@ func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
 
 	for k, v := range m.Column {
 		if v.Name == s.Name {
+			delete(m.customSizes, s.Name)
 			m.Column[k].Size = s.Size
 			return nil
 		}
