@@ -13,11 +13,18 @@ import (
 const MEGABYTE = 1.0 << (10 * 2)
 
 func main() {
-	fileName := flag.String("file", "", "")
-	generate := flag.String("generate", "", "")
+	fileName := flag.String("file", "", "yml file for save cql parser result")
+	query := flag.String("query", "", "CQL query")
 	flag.Parse()
 
-	if *fileName != "" && *generate != "" {
+	if *query == "" && *fileName == "" {
+		flag.PrintDefaults()
+		return
+	}
+
+	meta := calculator.Metadata{}
+
+	if *query != "" {
 		fmt.Print("Enter rows count per one partition: ")
 
 		var i int
@@ -26,7 +33,7 @@ func main() {
 			panic(err)
 		}
 
-		meta, err := calculator.PopulateTableMetadata(*generate, i)
+		meta, err = calculator.PopulateTableMetadata(*query, i)
 		if err != nil {
 			panic(err)
 		}
@@ -49,35 +56,38 @@ func main() {
 			}
 		}
 
-		data, err := yaml.Marshal(meta)
+		if *fileName != "" {
+			data, err := yaml.Marshal(meta)
+			if err != nil {
+				panic(err)
+			}
+
+			err = ioutil.WriteFile(*fileName, data, 0755)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	if *fileName != "" && *query == "" {
+		f, err := ioutil.ReadFile(*fileName)
 		if err != nil {
 			panic(err)
 		}
 
-		err = ioutil.WriteFile(*fileName, data, 0755)
+		err = yaml.Unmarshal(f, &meta)
 		if err != nil {
 			panic(err)
 		}
-	}
-
-	f, err := ioutil.ReadFile(*fileName)
-	if err != nil {
-		panic(err)
-	}
-
-	m := calculator.Metadata{}
-	err = yaml.Unmarshal(f, &m)
-	if err != nil {
-		panic(err)
 	}
 
 	nov := calculator.NOV{
-		Metadata: m,
+		Metadata: meta,
 	}
 	nov.Calculate()
 
 	pds := calculator.PDS{
-		Metadata: m,
+		Metadata: meta,
 		NOV:      nov.GetResult(),
 	}
 	pds.Calculate()

@@ -2,7 +2,7 @@
 
 # Calculating the size of a table in Cassandra
 
-## Calculating Partition Size
+### Calculating Partition Size
 
 In order to calculate the size of our partitions, we use the following formula:
 
@@ -19,12 +19,22 @@ In order to determine the size, we use the following formula to determine the si
  - We recognize the number of rows Nr and number of values Nv from our previous calculations.
  - The sizeOf() function refers to the size in bytes of the CQL data type of each referenced column.
 
-## How to run
+### Install
 
 ```
-> go install github.com/johnnywidth/cql-calculator/cmd/cql-calculator
-> cql-calculator -file example.yaml
-> cql-calculator -file generated.yaml -generate "CREATE TABLE video (video_id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))"
+> go get -u github.com/johnnywidth/cql-calculator/cmd/cql-calculator
+```
+
+### Example
+
+```
+> cql-calculator
+> cql-calculator -file $GOPATH/src/github.com/johnnywidth/cql-calculator/cmd/cql-calculator/example.yaml
+```
+
+```
+> cql-calculator -file generated.yaml -query "CREATE TABLE video (video_id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (video_id, email))"
+> cql-calculator -file generated.yaml
 ```
 
 ### TODO
