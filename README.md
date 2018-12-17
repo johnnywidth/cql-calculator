@@ -1,5 +1,5 @@
 [![CircleCI](https://circleci.com/gh/johnnywidth/cql-calculator.svg?style=svg)](https://circleci.com/gh/johnnywidth/cql-calculator) [![codecov](https://codecov.io/gh/johnnywidth/cql-calculator/branch/master/graph/badge.svg)](https://codecov.io/gh/johnnywidth/cql-calculator) [![Go Report Card](https://goreportcard.com/badge/github.com/johnnywidth/cql-calculator)](https://goreportcard.com/report/github.com/johnnywidth/cql-calculator)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator.svg?type=small)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator?ref=badge_small)
 
 # Calculating the size of a table in Cassandra
 
@@ -44,6 +44,4 @@ In order to determine the size, we use the following formula to determine the si
  - Parse full literals for `list`, `map`, `set`
  - Consider cassandra limitations, like max size for types, etc.
 
-
-## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator?ref=badge_large)
