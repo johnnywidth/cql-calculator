@@ -18,6 +18,8 @@ const (
 	Dot                // .
 	LeftRoundBrackets  // (
 	RightRoundBrackets // )
+	LT                 // <
+	GT                 // >
 
 	// Keywords
 	CreateTable

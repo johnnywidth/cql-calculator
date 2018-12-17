@@ -44,14 +44,15 @@ func (p *Parser) Parse() (*Statement, error) {
 		SK:     make(map[string]Column),
 	}
 
+	// Starts from "CREATE TABLE"
 	if tok, lit := p.scanIgnoreWhitespace(); tok != CreateTable {
 		return nil, fmt.Errorf("found %q, expected CREATE", lit)
 	}
-
 	if tok, lit := p.scanIgnoreWhitespace(); tok != CreateTable {
 		return nil, fmt.Errorf("found %q, expected TABLE", lit)
 	}
 
+	// Parse table_name or database.table_name
 	tok, lit := p.scanIgnoreWhitespace()
 	if tok != IDENT {
 		return nil, fmt.Errorf("found %q, expected table name", lit)
@@ -69,21 +70,19 @@ func (p *Parser) Parse() (*Statement, error) {
 		tok, lit = p.scanIgnoreWhitespace()
 	}
 
+	// Starts from `(` to find columns
 	if tok != LeftRoundBrackets {
 		return nil, fmt.Errorf("found %q, expected lrb", lit)
 	}
 
 	err := p.regularColumns(stmt)
-	if err != nil {
-		return nil, err
-	}
 
-	return stmt, nil
+	return stmt, err
 }
 
 func (p *Parser) regularColumns(stmt *Statement) error {
 	for {
-		tok, lit := p.scanIgnoreWhitespace()
+		tok, columnName := p.scanIgnoreWhitespace()
 		if tok == PrimaryKey {
 			err := p.pkColumns(stmt)
 			if err != nil {
@@ -93,31 +92,40 @@ func (p *Parser) regularColumns(stmt *Statement) error {
 		}
 
 		if tok != IDENT {
-			return fmt.Errorf("found %q, expected column name", lit)
+			return fmt.Errorf("found %q, expected column name", columnName)
 		}
 
-		tok2, lit2 := p.scanIgnoreWhitespace()
-		if tok2 != IDENT {
-			return fmt.Errorf("found %q, expected type", lit2)
-		}
-
-		stmt.Colums[lit] = Column{Name: lit, Type: lit2}
-
-		tok3, _ := p.scanIgnoreWhitespace()
-		if tok3 == Static {
-			stmt.SK[lit] = Column{Name: lit, Type: lit2}
-		} else {
-			p.unscan()
-		}
-
-		tok, _ = p.scanIgnoreWhitespace()
-		if tok != COMMA {
-			p.unscan()
-			break
-		}
+		stmt.Colums[columnName] = Column{Name: columnName, Type: p.columnType(stmt, columnName)}
 	}
 
 	return nil
+}
+
+func (p *Parser) columnType(stmt *Statement, name string) string {
+	var cType string
+	var collectionBracket int
+
+	for {
+		tok, lit := p.scanIgnoreWhitespace()
+		if tok == COMMA && collectionBracket == 0 {
+			break
+		}
+		if tok == LT {
+			collectionBracket++
+		}
+		if tok == GT {
+			collectionBracket--
+		}
+
+		if tok == Static {
+			stmt.SK[name] = Column{Name: name, Type: cType}
+			continue
+		}
+
+		cType += lit
+	}
+
+	return cType
 }
 
 func (p *Parser) pkColumns(stmt *Statement) error {
@@ -133,24 +141,22 @@ func (p *Parser) pkColumns(stmt *Statement) error {
 
 	tok, _ = p.scanIgnoreWhitespace()
 	if tok == LeftRoundBrackets {
-		return p.pkCompositeColumns(stmt)
-	}
+		err := p.pkCompositeColumns(stmt)
+		if err != nil {
+			return err
+		}
+	} else {
+		p.unscan()
 
-	p.unscan()
-
-	for {
 		tok, lit = p.scanIgnoreWhitespace()
 		if tok != IDENT {
 			return fmt.Errorf("PK. found %q, expected column name", lit)
 		}
 
 		stmt.PK[lit] = Column{Name: lit, Type: stmt.Colums[lit].Type}
-		break
 	}
 
-	err := p.ckColumns(stmt)
-
-	return err
+	return p.ckColumns(stmt)
 }
 
 func (p *Parser) pkCompositeColumns(stmt *Statement) error {
@@ -172,9 +178,7 @@ func (p *Parser) pkCompositeColumns(stmt *Statement) error {
 		}
 	}
 
-	err := p.ckColumns(stmt)
-
-	return err
+	return nil
 }
 
 func (p *Parser) ckColumns(stmt *Statement) error {

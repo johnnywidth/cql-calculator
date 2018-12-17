@@ -62,7 +62,7 @@ func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
 
 func (m *Metadata) addCustomSize(c cql.Column) {
 	if m.customSizes == nil {
-		m.customSizes = make(map[string]CustomSize, 0)
+		m.customSizes = make(map[string]CustomSize)
 	}
 	m.customSizes[c.Name] = CustomSize{
 		Name: c.Name,
