@@ -45,6 +45,10 @@ func (s *Scanner) Scan() (tok Token, lit string) {
 		return LeftRoundBrackets, string(ch)
 	case ')':
 		return RightRoundBrackets, string(ch)
+	case '<':
+		return LT, string(ch)
+	case '>':
+		return GT, string(ch)
 	}
 
 	return ILLEGAL, string(ch)

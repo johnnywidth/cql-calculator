@@ -38,10 +38,8 @@ In order to determine the size, we use the following formula to determine the si
 > cql-calculator -file generated.yaml
 ```
 
-### TODO
+### Does not support
  - Parse `IF NOT EXISTS`
  - Parse simple `PRIMARY KEY`
- - Parse full literals for `list`, `map`, `set`
- - Consider cassandra limitations, like max size for types, etc.
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjohnnywidth%2Fcql-calculator?ref=badge_large)
