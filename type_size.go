@@ -75,17 +75,17 @@ func GetSizeByType(n, t string) (int, error) {
 	switch t {
 	case "decimal", "duration":
 		return -1, nil
-	case "boolean", "tinyint", "smallint":
+	case "boolean", "tinyint":
 		return 1, nil
+	case "smallint":
+		return 2, nil
 	case "date", "int", "float", "inet":
 		return 4, nil
 	case "bigint", "counter", "time", "timestamp", "double", "varint":
 		return 8, nil
 	case "uuid", "timeuuid":
 		return 16, nil
-	case "ascii", "text", "varchar", "blob", "map", "list", "set":
-		return -1, errors.New("specify size")
 	}
 
-	return -1, errors.New("type not exist in cql")
+	return -1, errors.New("specify custom size")
 }
