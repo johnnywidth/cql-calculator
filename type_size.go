@@ -72,7 +72,7 @@ func (m *Metadata) addCustomSize(c cql.Column) {
 
 // GetSizeByType get zise by type
 func GetSizeByType(n, t string) (int, error) {
-	switch t {
+	switch strings.ToLower(t) {
 	case "decimal", "duration":
 		return -1, nil
 	case "boolean", "tinyint":
