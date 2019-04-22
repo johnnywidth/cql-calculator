@@ -2,6 +2,7 @@ package calculator
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/johnnywidth/cql-calculator/cql-parser"
 )
