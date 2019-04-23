@@ -20,25 +20,18 @@ func (m *Metadata) GetNotSpecifiedSizes() map[string]CustomSize {
 }
 
 // SpecifyCustomSize specify custom size
-func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
+func (m *Metadata) SpecifyCustomSize(s CustomSize) {
 	_, ok := m.customSizes[s.Name]
 	if !ok || s.Size <= 0 {
-		return errors.New("invalid size")
+		return
 	}
 
-	for k, v := range m.Partition {
-		if v.Name == s.Name {
-			delete(m.customSizes, s.Name)
-			m.Partition[k].Size = s.Size
-			return nil
-		}
-	}
+	m.specifyPKCustomSize(s)
 
 	for k, v := range m.Cluster {
 		if v.Name == s.Name {
 			delete(m.customSizes, s.Name)
 			m.Cluster[k].Size = s.Size
-			return nil
 		}
 	}
 
@@ -46,7 +39,6 @@ func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
 		if v.Name == s.Name {
 			delete(m.customSizes, s.Name)
 			m.Static[k].Size = s.Size
-			return nil
 		}
 	}
 
@@ -54,11 +46,17 @@ func (m *Metadata) SpecifyCustomSize(s CustomSize) error {
 		if v.Name == s.Name {
 			delete(m.customSizes, s.Name)
 			m.Column[k].Size = s.Size
-			return nil
 		}
 	}
+}
 
-	return errors.New("did not specify")
+func (m *Metadata) specifyPKCustomSize(s CustomSize) {
+	for k, v := range m.Partition {
+		if v.Name == s.Name {
+			delete(m.customSizes, s.Name)
+			m.Partition[k].Size = s.Size
+		}
+	}
 }
 
 func (m *Metadata) addCustomSize(c cql.Column) {

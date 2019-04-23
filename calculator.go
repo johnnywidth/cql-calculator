@@ -4,7 +4,7 @@ import "fmt"
 
 // NOV number of values data
 type NOV struct {
-	Metadata Metadata
+	Metadata *Metadata
 
 	result  int
 	formula string
@@ -33,7 +33,7 @@ func (p *NOV) GetFormula() string {
 
 // PDS partition disk size data
 type PDS struct {
-	Metadata Metadata
+	Metadata *Metadata
 	NOV      int
 
 	formula string

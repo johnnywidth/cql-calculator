@@ -114,7 +114,9 @@ func TestParse(t *testing.T) {
 			},
 		},
 		{
-			s: `CREATE TABLE table_name (id int, set_text set<text>, map_int_text map<int,text>, list_int list<int>, frozen_map map<text,frozen<list<text>>>, nested_map map<text,map<text,text>>, PRIMARY KEY (id))`,
+			s: `CREATE TABLE table_name (
+				id int, set_text set<text>, map_int_text map<int,text>, list_int list<int>, 
+				frozen_map map<text,frozen<list<text>>>, nested_map map<text,map<text,text>>, PRIMARY KEY (id))`,
 			stmt: &cql.Statement{
 				TableName: "table_name",
 				Colums: map[string]cql.Column{
