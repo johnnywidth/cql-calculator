@@ -27,19 +27,19 @@ type Column struct {
 }
 
 // PopulateTableMetadata populate table metadata from cql query
-func PopulateTableMetadata(cqlString string, rn int) (Metadata, error) {
+func PopulateTableMetadata(cqlString string, rn int) (*Metadata, error) {
 	b := bytes.NewReader([]byte(cqlString))
 	p := cql.NewParser(b)
 	r, err := p.Parse()
 	if err != nil {
-		return Metadata{}, err
+		return nil, err
 	}
 
 	if len(r.PK) == 0 {
-		return Metadata{}, errors.New("missed partition key(s)")
+		return nil, errors.New("missed partition key(s)")
 	}
 
-	m := Metadata{
+	m := &Metadata{
 		Rows: rn,
 		Name: r.TableName,
 	}

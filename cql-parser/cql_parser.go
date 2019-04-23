@@ -131,12 +131,12 @@ func (p *Parser) columnType(stmt *Statement, name string) string {
 func (p *Parser) pkColumns(stmt *Statement) error {
 	tok, lit := p.scanIgnoreWhitespace()
 	if tok != PrimaryKey {
-		return fmt.Errorf("PK. found %q, expected primary key", lit)
+		return fmt.Errorf("parse pk. found %q, expected primary key", lit)
 	}
 
 	tok, lit = p.scanIgnoreWhitespace()
 	if tok != LeftRoundBrackets {
-		return fmt.Errorf("PK. found %q, expected left round brackets", lit)
+		return fmt.Errorf("parse pk. found %q, expected left round brackets", lit)
 	}
 
 	tok, _ = p.scanIgnoreWhitespace()
@@ -150,7 +150,7 @@ func (p *Parser) pkColumns(stmt *Statement) error {
 
 		tok, lit = p.scanIgnoreWhitespace()
 		if tok != IDENT {
-			return fmt.Errorf("PK. found %q, expected column name", lit)
+			return fmt.Errorf("parse pk. found %q, expected column name", lit)
 		}
 
 		stmt.PK[lit] = Column{Name: lit, Type: stmt.Colums[lit].Type}
@@ -163,7 +163,7 @@ func (p *Parser) pkCompositeColumns(stmt *Statement) error {
 	for {
 		tok, lit := p.scanIgnoreWhitespace()
 		if tok != IDENT {
-			return fmt.Errorf("Composite PK. found %q, expected column name", lit)
+			return fmt.Errorf("parse composite pk. found %q, expected column name", lit)
 		}
 
 		stmt.PK[lit] = Column{Name: lit, Type: stmt.Colums[lit].Type}
@@ -187,13 +187,13 @@ func (p *Parser) ckColumns(stmt *Statement) error {
 		return nil
 	}
 	if tok != COMMA {
-		return fmt.Errorf("Cluster. found %q, expected rrb or comma", lit)
+		return fmt.Errorf("parse cluster. found %q, expected rrb or comma", lit)
 	}
 
 	for {
 		tok, lit = p.scanIgnoreWhitespace()
 		if tok != IDENT {
-			return fmt.Errorf("Cluster. found %q, expected column name", lit)
+			return fmt.Errorf("parse cluster. found %q, expected column name", lit)
 		}
 
 		stmt.CK[lit] = Column{Name: lit, Type: stmt.Colums[lit].Type}

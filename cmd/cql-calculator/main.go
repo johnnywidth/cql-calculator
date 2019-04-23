@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/johnnywidth/cql-calculator"
+	calculator "github.com/johnnywidth/cql-calculator"
 	"gopkg.in/yaml.v2"
 )
 
@@ -22,7 +22,7 @@ func main() {
 		return
 	}
 
-	meta := calculator.Metadata{}
+	meta := &calculator.Metadata{}
 
 	if *query != "" {
 		fmt.Print("Enter rows count per one partition: ")
@@ -49,37 +49,14 @@ func main() {
 				}
 				v.Size = i
 
-				err = meta.SpecifyCustomSize(v)
-				if err != nil {
-					panic(err)
-				}
+				meta.SpecifyCustomSize(v)
 			}
 		}
 
-		if *fileName != "" {
-			data, err := yaml.Marshal(meta)
-			if err != nil {
-				panic(err)
-			}
-
-			err = ioutil.WriteFile(*fileName, data, 0755)
-			if err != nil {
-				panic(err)
-			}
-		}
+		writeMetaToFile(meta, *fileName)
 	}
 
-	if *fileName != "" && *query == "" {
-		f, err := ioutil.ReadFile(*fileName)
-		if err != nil {
-			panic(err)
-		}
-
-		err = yaml.Unmarshal(f, &meta)
-		if err != nil {
-			panic(err)
-		}
-	}
+	populateMetaFromFile(meta, *fileName, *query)
 
 	nov := calculator.NOV{
 		Metadata: meta,
@@ -94,4 +71,32 @@ func main() {
 
 	fmt.Printf("Number of Values:\n%s = %d\n\n", nov.GetFormula(), nov.GetResult())
 	fmt.Printf("Partition Size on Disk:\n%s = %d bytes (%.2f Mb)\n", pds.GetFormula(), pds.GetResult(), float64(pds.GetResult())/MEGABYTE)
+}
+
+func writeMetaToFile(meta *calculator.Metadata, fileName string) {
+	if fileName != "" {
+		data, err := yaml.Marshal(meta)
+		if err != nil {
+			panic(err)
+		}
+
+		err = ioutil.WriteFile(fileName, data, 0755)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func populateMetaFromFile(meta *calculator.Metadata, fileName, query string) {
+	if fileName != "" && query == "" {
+		f, err := ioutil.ReadFile(fileName)
+		if err != nil {
+			panic(err)
+		}
+
+		err = yaml.Unmarshal(f, &meta)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
