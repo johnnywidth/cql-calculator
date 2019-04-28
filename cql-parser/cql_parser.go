@@ -44,12 +44,9 @@ func (p *Parser) Parse() (*Statement, error) {
 		SK:     make(map[string]Column),
 	}
 
-	// Starts from "CREATE TABLE"
-	if tok, lit := p.scanIgnoreWhitespace(); tok != CreateTable {
-		return nil, fmt.Errorf("found %q, expected CREATE", lit)
-	}
-	if tok, lit := p.scanIgnoreWhitespace(); tok != CreateTable {
-		return nil, fmt.Errorf("found %q, expected TABLE", lit)
+	err := p.createTable()
+	if err != nil {
+		return nil, err
 	}
 
 	// Parse table_name or database.table_name
@@ -72,12 +69,37 @@ func (p *Parser) Parse() (*Statement, error) {
 
 	// Starts from `(` to find columns
 	if tok != LeftRoundBrackets {
-		return nil, fmt.Errorf("found %q, expected lrb", lit)
+		return nil, fmt.Errorf("found %q, expected '('", lit)
 	}
 
-	err := p.regularColumns(stmt)
+	err = p.regularColumns(stmt)
 
 	return stmt, err
+}
+
+func (p *Parser) createTable() error {
+	// Starts from "CREATE TABLE"
+	if tok, lit := p.scanIgnoreWhitespace(); tok != CreateTable {
+		return fmt.Errorf("found %q, expected `CREATE TABLE`", lit)
+	}
+	if tok, lit := p.scanIgnoreWhitespace(); tok != CreateTable {
+		return fmt.Errorf("found %q, expected `CREATE TABLE`", lit)
+	}
+
+	// Consider optional IF NOT EXIST after CREATE TABLE
+	if tok, _ := p.scanIgnoreWhitespace(); tok != IfNotExist {
+		p.unscan()
+	} else {
+		if tok, lit := p.scanIgnoreWhitespace(); tok != IfNotExist {
+			return fmt.Errorf("found %q, expected 'IF NOT EXIST'", lit)
+		}
+
+		if tok, lit := p.scanIgnoreWhitespace(); tok != IfNotExist {
+			return fmt.Errorf("found %q, expected 'IF NOT EXIST'", lit)
+		}
+	}
+
+	return nil
 }
 
 func (p *Parser) regularColumns(stmt *Statement) error {
@@ -92,7 +114,7 @@ func (p *Parser) regularColumns(stmt *Statement) error {
 		}
 
 		if tok != IDENT {
-			return fmt.Errorf("found %q, expected column name", columnName)
+			return fmt.Errorf("parse regular columns failed. found %q, expected column name", columnName)
 		}
 
 		stmt.Colums[columnName] = Column{Name: columnName, Type: p.columnType(stmt, columnName)}
@@ -131,12 +153,12 @@ func (p *Parser) columnType(stmt *Statement, name string) string {
 func (p *Parser) pkColumns(stmt *Statement) error {
 	tok, lit := p.scanIgnoreWhitespace()
 	if tok != PrimaryKey {
-		return fmt.Errorf("parse pk. found %q, expected primary key", lit)
+		return fmt.Errorf("parse primary key. found %q, expected primary key", lit)
 	}
 
 	tok, lit = p.scanIgnoreWhitespace()
 	if tok != LeftRoundBrackets {
-		return fmt.Errorf("parse pk. found %q, expected left round brackets", lit)
+		return fmt.Errorf("parse primary key. found %q, expected '('", lit)
 	}
 
 	tok, _ = p.scanIgnoreWhitespace()
@@ -150,7 +172,7 @@ func (p *Parser) pkColumns(stmt *Statement) error {
 
 		tok, lit = p.scanIgnoreWhitespace()
 		if tok != IDENT {
-			return fmt.Errorf("parse pk. found %q, expected column name", lit)
+			return fmt.Errorf("parse primary key. found %q, expected column name", lit)
 		}
 
 		stmt.PK[lit] = Column{Name: lit, Type: stmt.Colums[lit].Type}
@@ -163,7 +185,7 @@ func (p *Parser) pkCompositeColumns(stmt *Statement) error {
 	for {
 		tok, lit := p.scanIgnoreWhitespace()
 		if tok != IDENT {
-			return fmt.Errorf("parse composite pk. found %q, expected column name", lit)
+			return fmt.Errorf("parse composite partition key failed. found %q, expected column name", lit)
 		}
 
 		stmt.PK[lit] = Column{Name: lit, Type: stmt.Colums[lit].Type}
@@ -187,13 +209,13 @@ func (p *Parser) ckColumns(stmt *Statement) error {
 		return nil
 	}
 	if tok != COMMA {
-		return fmt.Errorf("parse cluster. found %q, expected rrb or comma", lit)
+		return fmt.Errorf("parse cluster columns failed. found %q, expected ')' or ','", lit)
 	}
 
 	for {
 		tok, lit = p.scanIgnoreWhitespace()
 		if tok != IDENT {
-			return fmt.Errorf("parse cluster. found %q, expected column name", lit)
+			return fmt.Errorf("parse cluster columns failed. found %q, expected column name", lit)
 		}
 
 		stmt.CK[lit] = Column{Name: lit, Type: stmt.Colums[lit].Type}
