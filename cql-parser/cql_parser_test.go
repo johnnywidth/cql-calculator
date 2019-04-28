@@ -37,7 +37,7 @@ func TestParse(t *testing.T) {
 			},
 		},
 		{
-			s: `CREATE TABLE IF NOT EXIST t.table_name 
+			s: `CREATE TABLE IF NOT EXISTS t.table_name 
 				(id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (id, email))`,
 			stmt: &cql.Statement{
 				TableName: "table_name",
@@ -183,9 +183,9 @@ func TestParse_Errors(t *testing.T) {
 			(id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (id, email))`,
 		`CREATE TABLE NOT t.table_name 
 			(id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (id, email))`,
-		`CREATE TABLE EXIST t.table_name 
+		`CREATE TABLE EXISTS t.table_name 
 			(id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (id, email))`,
-		`CREATE TABLE IF EXIST t.table_name 
+		`CREATE TABLE IF EXISTS t.table_name 
 			(id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (id, email))`,
 		`CREATE t.table_name 
 			(id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (id, email))`,

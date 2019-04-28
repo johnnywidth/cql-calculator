@@ -86,16 +86,16 @@ func (p *Parser) createTable() error {
 		return fmt.Errorf("found %q, expected `CREATE TABLE`", lit)
 	}
 
-	// Consider optional IF NOT EXIST after CREATE TABLE
-	if tok, _ := p.scanIgnoreWhitespace(); tok != IfNotExist {
+	// Consider optional IF NOT EXISTS after CREATE TABLE
+	if tok, _ := p.scanIgnoreWhitespace(); tok != IfNotExists {
 		p.unscan()
 	} else {
-		if tok, lit := p.scanIgnoreWhitespace(); tok != IfNotExist {
-			return fmt.Errorf("found %q, expected 'IF NOT EXIST'", lit)
+		if tok, lit := p.scanIgnoreWhitespace(); tok != IfNotExists {
+			return fmt.Errorf("found %q, expected 'IF NOT EXISTS'", lit)
 		}
 
-		if tok, lit := p.scanIgnoreWhitespace(); tok != IfNotExist {
-			return fmt.Errorf("found %q, expected 'IF NOT EXIST'", lit)
+		if tok, lit := p.scanIgnoreWhitespace(); tok != IfNotExists {
+			return fmt.Errorf("found %q, expected 'IF NOT EXISTS'", lit)
 		}
 	}
 

@@ -23,7 +23,7 @@ const (
 
 	// Keywords
 	CreateTable
-	IfNotExist
+	IfNotExists
 	Static
 	PrimaryKey
 )

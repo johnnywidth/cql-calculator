@@ -105,8 +105,8 @@ func (s *Scanner) scanIdent() (tok Token, lit string) {
 	switch strings.ToUpper(buf.String()) {
 	case "CREATE", "TABLE":
 		return CreateTable, buf.String()
-	case "IF", "NOT", "EXIST":
-		return IfNotExist, buf.String()
+	case "IF", "NOT", "EXISTS":
+		return IfNotExists, buf.String()
 	case "PRIMARY", "KEY":
 		return PrimaryKey, buf.String()
 	case "STATIC":
