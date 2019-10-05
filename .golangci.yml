@@ -18,6 +18,7 @@ linters:
   disable:
     - gochecknoglobals
     - gochecknoinits
+    - godox
   
 linters-settings:
   govet:
@@ -61,6 +62,7 @@ issues:
         - errcheck
         - dupl
         - gosec
+        - funlen
     - text: "weak cryptographic primitive"
       linters:
         - gosec

@@ -25,6 +25,6 @@ jobs:
       - run: GO111MODULE=on go mod vendor
       - run: go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
       - run: go get -v -t -d ./...
-      - run: golangci-lint run -v
+      - run: golangci-lint run -v -c .golangci.yml
       - run: go test -v ./... -coverprofile=coverage.txt
       - run: bash <(curl -s https://codecov.io/bash) -f coverage.txt
