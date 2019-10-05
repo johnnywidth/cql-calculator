@@ -18,7 +18,6 @@ linters:
   disable:
     - gochecknoglobals
     - gochecknoinits
-    - godox
   
 linters-settings:
   govet:
