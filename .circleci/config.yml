@@ -6,7 +6,7 @@ jobs:
   build:
     docker:
       # specify the version
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.13
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -23,7 +23,7 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: GO111MODULE=on go mod vendor
-      - run: go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+      - run: go get -u github.com/golangci/golangci-lint/cmd/golangci-lint@v1.17.1
       - run: go get -v -t -d ./...
       - run: golangci-lint run -v -c .golangci.yml
       - run: go test -v ./... -coverprofile=coverage.txt
