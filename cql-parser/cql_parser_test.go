@@ -162,6 +162,28 @@ func TestParse(t *testing.T) {
 				SK: map[string]cql.Column{},
 			},
 		},
+		// TODO: support parse simple PRIMARY KEY
+		// {
+		// 	s: `CREATE TABLE table_name (
+		// 		id int PRIMARY KEY, set_text set<text>, map_int_text map<int,text>, list_int list<int>,
+		// 		frozen_map map<text,frozen<list<text>>>, nested_map map<text,map<text,text>>)`,
+		// 	stmt: &cql.Statement{
+		// 		TableName: "table_name",
+		// 		Colums: map[string]cql.Column{
+		// 			"id":           {Name: "id", Type: "int"},
+		// 			"set_text":     {Name: "set_text", Type: "set<text>"},
+		// 			"map_int_text": {Name: "map_int_text", Type: "map<int,text>"},
+		// 			"list_int":     {Name: "list_int", Type: "list<int>"},
+		// 			"frozen_map":   {Name: "frozen_map", Type: "map<text,frozen<list<text>>>"},
+		// 			"nested_map":   {Name: "nested_map", Type: "map<text,map<text,text>>"},
+		// 		},
+		// 		PK: map[string]cql.Column{
+		// 			"id": {Name: "id", Type: "int"},
+		// 		},
+		// 		CK: map[string]cql.Column{},
+		// 		SK: map[string]cql.Column{},
+		// 	},
+		// },
 	}
 
 	for i, tc := range testCases {
