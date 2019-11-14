@@ -20,10 +20,11 @@ jobs:
       run: |
         go mod vendor
         go get -v -t -d ./...
-        go get -u github.com/golangci/golangci-lint/cmd/golangci-lint@v1.18.0
         
     - name: Run golangci linter
       run: |
+        go get -u github.com/golangci/golangci-lint/cmd/golangci-lint@v1.18.0
+        go install github.com/golangci/golangci-lint/cmd/golangci-lint
         golangci-lint run -v -c .golangci.yml
         
     - name: Run tests with coverage
