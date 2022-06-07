@@ -1,5 +1,5 @@
 service:
-  golangci-lint-version: 1.18.0
+  golangci-lint-version: 1.46.2
 
 run:
   # timeout for analysis, e.g. 30s, 5m, default is 1m
@@ -17,10 +17,34 @@ run:
     format: checkstyle
 
 linters:
-  enable-all: true
-  disable:
-    - gochecknoglobals
-    - gochecknoinits
+  disable-all: true
+  enable:
+    - govet
+    - errcheck
+    - gocyclo
+    - structcheck
+    - varcheck
+    - ineffassign
+    - deadcode
+    - typecheck
+    - revive
+    - unconvert
+    - goconst
+    - gocyclo
+    - staticcheck
+    - unused
+    - gosimple
+    - dupl
+    - gofmt
+    - gosec
+    - lll
+    - megacheck
+    - gocritic
+    - predeclared
+    - thelper
+    - makezero
+    - paralleltest
+  fast: false
   
 linters-settings:
   govet:
