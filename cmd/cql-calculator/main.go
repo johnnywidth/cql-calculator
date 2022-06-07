@@ -80,7 +80,7 @@ func writeMetaToFile(meta *calculator.Metadata, fileName string) {
 			panic(err)
 		}
 
-		err = os.WriteFile(fileName, data, 0o755) //nolint:gosec
+		err = os.WriteFile(fileName, data, 0o600)
 		if err != nil {
 			panic(err)
 		}
