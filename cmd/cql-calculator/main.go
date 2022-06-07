@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	calculator "github.com/johnnywidth/cql-calculator"
 	"gopkg.in/yaml.v2"
@@ -80,7 +80,7 @@ func writeMetaToFile(meta *calculator.Metadata, fileName string) {
 			panic(err)
 		}
 
-		err = ioutil.WriteFile(fileName, data, 0755)
+		err = os.WriteFile(fileName, data, 0o755) //nolint:gosec
 		if err != nil {
 			panic(err)
 		}
@@ -89,7 +89,7 @@ func writeMetaToFile(meta *calculator.Metadata, fileName string) {
 
 func populateMetaFromFile(meta *calculator.Metadata, fileName, query string) {
 	if fileName != "" && query == "" {
-		f, err := ioutil.ReadFile(fileName)
+		f, err := os.ReadFile(fileName)
 		if err != nil {
 			panic(err)
 		}

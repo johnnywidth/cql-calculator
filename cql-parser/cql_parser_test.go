@@ -9,6 +9,8 @@ import (
 )
 
 func TestParse(t *testing.T) {
+	t.Parallel()
+
 	var testCases = []struct {
 		s    string
 		stmt *cql.Statement
@@ -187,6 +189,8 @@ func TestParse(t *testing.T) {
 	}
 
 	for i, tc := range testCases {
+		tc := tc
+
 		stmt, err := cql.NewParser(strings.NewReader(tc.s)).Parse()
 		if !reflect.DeepEqual(tc.stmt, stmt) {
 			t.Errorf("%d. %q\n\nstmt mismatch:\n\nexp=%#v\n\ngot=%#v\n\n", i, tc.s, tc.stmt, stmt)
@@ -196,6 +200,8 @@ func TestParse(t *testing.T) {
 }
 
 func TestParse_Errors(t *testing.T) {
+	t.Parallel()
+
 	var testCases = []string{
 		`CREATE TABLE t. 
 			(id int, email text, name text STATIC, status tinyint, uploaded_at timestamp, PRIMARY KEY (id, email))`,
@@ -236,6 +242,8 @@ func TestParse_Errors(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
+		tc := tc
+
 		_, err := cql.NewParser(strings.NewReader(tc)).Parse()
 		if err == nil {
 			t.Fatalf("Should be err for %s, got nil", tc)
