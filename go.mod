@@ -1,6 +1,6 @@
 module github.com/johnnywidth/cql-calculator
 
-go 1.17
+go 1.18
 
 require gopkg.in/yaml.v2 v2.2.2
 
