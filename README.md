@@ -33,7 +33,7 @@ In order to determine the size, we use the following formula to determine the si
 ## Install
 
 ```
-$ go get -u github.com/johnnywidth/cql-calculator/cmd/cql-calculator
+$ go install github.com/johnnywidth/cql-calculator/cmd/cql-calculator
 ```
 
 ## Examples
